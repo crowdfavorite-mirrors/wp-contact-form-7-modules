@@ -1,9 +1,9 @@
 === Contact Form 7 Modules ===
 Tags: Contact Form 7, form, forms, contactform7, contact form, hidden fields, hidden, cf7, cforms ii, cforms, Contact Forms 7, Contact Forms, contacted, contacts
 Requires at least: 2.8
-Tested up to: 3.2.1
+Tested up to: 3.5
 Stable tag: trunk
-Contributors: katzwebdesign
+Contributors: katzwebdesign, katzwebservices
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Contact%20Form%207%20Modules&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 
 Contact Form 7 - Add useful modules such as hidden fields and "send all fields" to the Contact Form 7 plugin
@@ -12,7 +12,7 @@ Contact Form 7 - Add useful modules such as hidden fields and "send all fields" 
 
 ### Add Hidden Fields to Contact Form 7
 
-The Contact Form 7 plugin has over <em>4 million</em> downloads, yet the great plugin still lacks a simple feature: <strong>hidden fields</strong>. This plugin adds hidden fields to Contact Form 7 once and for all.
+The Contact Form 7 plugin has over <em>8.4 million</em> downloads, yet the great plugin still lacks a simple feature: <strong>hidden fields</strong>. This plugin adds hidden fields to Contact Form 7 once and for all.
 
 #### Inserting dynamic values
 
@@ -23,6 +23,13 @@ You can also choose to have the value of the hidden field dynamically populated 
 * `post_url` - The URL of the post or page
 * `post_author` - The author of the post or page
 * `custom_field-[Name]` - The value of a post or page's custom field. If you had a custom field "Foo", you would use the following as the hidden field value: `custom_field-Foo`
+
+The following values will be replaced if an user is logged in:
+
+* `user_name` - User Login
+* `user_id` - User ID
+* `user_email` - User Email Address
+* `user_display_name` - Display Name (Generally the first and last name of the user)
 
 <strong>You can also use a filter:</strong> hook into the `wpcf7_hidden_field_value` filter to modify the value of the hidden field  using <a href="http://codex.wordpress.org/Function_Reference/add_filter" rel="nofollow"><code>add_filter()</code></a>. If you know the ID of the input, you can also use the `wpcf7_hidden_field_value_[#ID]` filter.
 
@@ -50,13 +57,26 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 
 1. The new Hidden fields tag generator
 
-== Frequently Asked Questions == 
+== Frequently Asked Questions ==
 
 = What is the plugin license? =
 
 * This plugin is released under a GPL license.
 
 == Changelog ==
+
+= 1.3 =
+* Fixed: Hidden field now supports new Contact Form 7 format; post fields will work again.
+* Fixed: Send All Fields no longer causes spinning form submission in WordPress 3.5
+* Added: access any of the <a href="http://www.rlmseo.com/blog/wordpress-post-variable-quick-reference/" rel='nofollow'>data in `$post` object</a> by using the variable name. Example: You want `post_modified`? Use `[hidden hidden-123 "post_modified"]`
+* Added: If an user is logged in, you can now use `user_name`, `user_id`, `user_email`, `user_display_name` replacement values
+* Added/Improved: `post_author` will now return the author's Display Name. Use `post_author_id` for the post author's ID.
+* Added: Inline instructions on the Hidden field module
+* Improved: In Send All Fields, the name of the field now has dashes replaced with spaces. This will show "your name", rather than "your-name". Thanks, <a href="http://wordpress.org/support/topic/sending-all-fields-with-content-code-provided">@hitolonen</a>
+
+= 1.2.2 =
+* Removed `_wpnonce` field from `[all-fields]` output
+* Fixed a conflict when using "Send All Fields" module alongside "Hidden Fields" module (<a href="http://wordpress.org/support/topic/plugin-contact-form-7-modules-all-fields-doesn«t-work-wit-wordpress-33">as reported here</a>)
 
 = 1.2.1 =
 * Added support for checkboxes with Send All Fields (`[all-fields]`)
@@ -78,6 +98,19 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 
 == Upgrade Notice ==
 
+= 1.3 =
+* Fixed: Hidden field now supports new Contact Form 7 format; post fields will work again.
+* Fixed: Send All Fields no longer causes spinning form submission in WordPress 3.5
+* Added: access any of the <a href="http://www.rlmseo.com/blog/wordpress-post-variable-quick-reference/" rel='nofollow'>data in `$post` object</a> by using the variable name. Example: You want `post_modified`? Use `[hidden hidden-123 "post_modified"]`
+* Added: If an user is logged in, you can now use `user_name`, `user_id`, `user_email`, `user_display_name` replacement values
+* Added/Improved: `post_author` will now return the author's Display Name. Use `post_author_id` for the post author's ID.
+* Added: Inline instructions on the Hidden field module
+* Improved: In Send All Fields, the name of the field now has dashes replaced with spaces. This will show "your name", rather than "your-name". Thanks, <a href="http://wordpress.org/support/topic/sending-all-fields-with-content-code-provided">@hitolonen</a>
+
+= 1.2.2 =
+* Removed `_wpnonce` field from `[all-fields]` output
+* Fixed a conflict when using "Send All Fields" module alongside "Hidden Fields" module (<a href="http://wordpress.org/support/topic/plugin-contact-form-7-modules-all-fields-doesn«t-work-wit-wordpress-33">as reported here</a>)
+
 = 1.2.1 =
 * Added support for checkboxes with Send All Fields (`[all-fields]`)
 
@@ -93,5 +126,5 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 * Added support for using custom field values as hidden fields
 * Added `wpcf7_hidden_field_value` filter to hook into using <a href="http://codex.wordpress.org/Function_Reference/add_filter" rel="nofollow"><code>add_filter()</code></a>
 
-= 1.0 = 
+= 1.0 =
 * Woot!

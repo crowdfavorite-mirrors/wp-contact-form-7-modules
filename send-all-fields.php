@@ -5,10 +5,10 @@ Plugin URI: http://www.seodenver.com/contact-form-7-hidden-fields/
 Description: Send all submitted fields in the message body using one simple tag: <code>[all-fields]</code>
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 1.2.1
+Version: 1.3
 */
 
-/*  Copyright 2011 Katz Web Services, Inc. (email: info at katzwebservices.com)
+/*  Copyright 2012 Katz Web Services, Inc. (email: info at katzwebservices.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ Version: 1.2.1
 
 add_action('admin_init', 'load_contact_form_7_modules_functions');
 
-if(!function_exists('load_contact_form_7_modules_functions')) { 
+if(!function_exists('load_contact_form_7_modules_functions')) {
 	function load_contact_form_7_modules_functions() {
 		include_once('functions.php');
 	}
@@ -41,27 +41,31 @@ add_filter('wpcf7_mail_components', 'hidden_wpcf7_before_send_mail');
 
 function hidden_wpcf7_before_send_mail($array) {
 	$debug = false;  global $wpdb;
-	
+
 	if($debug) { print_r($array); }
-	if($debug) { print_r($_POST); }	
-	
+	if($debug) { print_r($_POST); }
+
 	$post = $_POST;
-	
-	$html = false; 
+
+	$html = false;
 	if(wpautop($array['body']) == $array['body']) { $html = true; }
-	
+
 	foreach($post as $k => $v) {
-		if(substr($k, 0, 6) == '_wpcf7' || strpos($k, 'all-fields')) {
+		if(substr($k, 0, 6) == '_wpcf7' || strpos($k, 'all-fields') || $k === '_wpnonce') {
 			unset($post["{$k}"]);
 		}
 	}
 	if($debug) { print_r($post); }
-	
+
 	$postbody = ''; if($html) { $postbody = '<dl>'; }
 	foreach($post as $k => $v) {
 		if(is_array($v)) {
 			$v = implode(', ', $v);
 		}
+
+        // Make the fields easier to read. Thanks, @hitolonen
+        $k = str_replace("-", " ", $k);
+
 		if($html) {
 			$postbody .= "<dt style='font-size:1.2em;'><font size='3'><strong>{$k}</strong>:</font></dt><dd style='padding:0 0 .5em 1.5em; margin:0;'>{$v}</dd>";
 		} else {
@@ -69,13 +73,15 @@ function hidden_wpcf7_before_send_mail($array) {
 		}
 	}
 	if($html) { $postbody .= '</dl>'; }
-	
+
 	if($debug) { print_r($postbody); }
-	
-	$postbody = $wpdb->prepare($postbody); // Sanitize!
-	
+
+	$postbody = esc_attr($postbody);
+
 	$array['body'] = str_replace('<p>[all-fields]</p>', $postbody, str_replace('[all-fields]', $postbody, $array['body']));
-	
+
+    return $array;
+
 	if($debug) { die(); } else { return $array; }
 }
 
@@ -86,8 +92,7 @@ add_action( 'admin_init', 'wpcf7_add_tag_generator_all_fields', 30 );
 
 function wpcf7_add_tag_generator_all_fields() {
 	if(function_exists('wpcf7_add_tag_generator')) {
-		wpcf7_add_tag_generator( 'hidden', __( 'All Fields', 'wpcf7' ),
-		'wpcf7-tg-pane-all-fields', 'wpcf7_tg_pane_all_fields' );
+		wpcf7_add_tag_generator( 'all-fields', __( 'All Fields', 'wpcf7' ), 'wpcf7-tg-pane-all-fields', 'wpcf7_tg_pane_all_fields' );
 	}
 }
 
@@ -103,4 +108,3 @@ function wpcf7_tg_pane_all_fields() {
 </div>
 <?php
 }
-?>
