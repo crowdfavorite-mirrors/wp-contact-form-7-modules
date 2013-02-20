@@ -5,10 +5,10 @@ Plugin URI: http://www.seodenver.com/contact-form-7-hidden-fields/
 Description: Add hidden fields to the popular Contact Form 7 plugin.
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 1.3
+Version: 1.3.1
 */
 
-/*  Copyright 2012 Katz Web Services, Inc. (email: info at katzwebservices.com)
+/*  Copyright 2013 Katz Web Services, Inc. (email: info at katzwebservices.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,26 +24,6 @@ Version: 1.3
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
-/**
-** A base module for [hidden] and [hidden*]
-**/
-
-add_action('admin_init', 'load_contact_form_7_modules_functions');
-
-if(!function_exists('load_contact_form_7_modules_functions')) {
-	function load_contact_form_7_modules_functions() {
-		include_once('functions.php');
-	}
-}
-
-/* Shortcode handler */
-
-add_filter('wpcf7_form_elements', 'wpcf7_form_elements_return_false');
-function wpcf7_form_elements_return_false($form) {
-	$brform = preg_replace('/<p>(<input\stype="hidden"(?:.*?))<\/p>/isme', "'<div class=\'hidden\' style=\'display:none;\'>'.\"\n\".str_replace('<br>', '', str_replace('<br />', '', stripslashes_deep('\\1'))).\"\n\".'</div>'", $form);
-	return $brform;
-}
 
 add_action('plugins_loaded', 'contact_form_7_hidden_fields', 10);
 
@@ -70,6 +50,26 @@ function contact_form_7_hidden_fields() {
 }
 
 /**
+** A base module for [hidden] and [hidden*]
+**/
+
+add_action('admin_init', 'load_contact_form_7_modules_functions');
+
+if(!function_exists('load_contact_form_7_modules_functions')) {
+	function load_contact_form_7_modules_functions() {
+		include_once('functions.php');
+	}
+}
+
+/* Shortcode handler */
+
+add_filter('wpcf7_form_elements', 'wpcf7_form_elements_return_false');
+function wpcf7_form_elements_return_false($form) {
+	$brform = preg_replace('/<p>(<input\stype="hidden"(?:.*?))<\/p>/isme', "'<div style=\'display:none;\'>'.\"\n\".str_replace('<br>', '', str_replace('<br />', '', stripslashes_deep('\\1'))).\"\n\".'</div>'", $form);
+	return $brform;
+}
+
+/**
 ** A base module for [hidden], [hidden*]
 **/
 
@@ -81,12 +81,13 @@ function wpcf7_hidden_shortcode_handler( $tag ) {
 		return '';
 
 	$type = $tag['type'];
-	$name = $tag['name'];
+	$name = $raw_name = $tag['name'];
 	$options = (array) $tag['options'];
 	$values = (array) $tag['values'];
 
-	if ( empty( $name ) )
+	if ( empty( $name ) ) {
 		return '';
+	}
 
 	$atts = '';
 	$id_att = '';
@@ -142,11 +143,12 @@ function wpcf7_hidden_shortcode_handler( $tag ) {
 		}
 
 		if (strtolower($name) == 'post_title' || strtolower($name) == 'post-title') {   $value = $post->post_title; }
-		if (strtolower($name) == 'post_url') {
+		if (strtolower($name) == 'post_url' || strtolower($name) == 'page_url') {
 			$value =  get_permalink($post->ID);
 			if(empty($value) && isset($post->guid)) {
 				$value = $post->guid;
 			}
+			$value = esc_url( $value );
 		}
 		if (strtolower($name) == 'post_category') {
 			$categories = get_the_category();$catnames = array();
@@ -178,7 +180,9 @@ function wpcf7_hidden_shortcode_handler( $tag ) {
 
 	$value = apply_filters('wpcf7_hidden_field_value', apply_filters('wpcf7_hidden_field_value_'.$id_att, $value));
 
-	$html = '<input type="hidden" name="' . $name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />';
+	$html = '';
+	$html .= '<input type="hidden" name="' . $raw_name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />'."\n";
+	$html .= '<input type="hidden" name="' . $name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />';
 
 	return $html;
 }

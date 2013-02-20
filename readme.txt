@@ -1,9 +1,9 @@
 === Contact Form 7 Modules ===
 Tags: Contact Form 7, form, forms, contactform7, contact form, hidden fields, hidden, cf7, cforms ii, cforms, Contact Forms 7, Contact Forms, contacted, contacts
 Requires at least: 2.8
-Tested up to: 3.5
+Tested up to: 3.4.2
 Stable tag: trunk
-Contributors: katzwebdesign, katzwebservices
+Contributors: katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Contact%20Form%207%20Modules&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 
 Contact Form 7 - Add useful modules such as hidden fields and "send all fields" to the Contact Form 7 plugin
@@ -23,13 +23,6 @@ You can also choose to have the value of the hidden field dynamically populated 
 * `post_url` - The URL of the post or page
 * `post_author` - The author of the post or page
 * `custom_field-[Name]` - The value of a post or page's custom field. If you had a custom field "Foo", you would use the following as the hidden field value: `custom_field-Foo`
-
-The following values will be replaced if an user is logged in:
-
-* `user_name` - User Login
-* `user_id` - User ID
-* `user_email` - User Email Address
-* `user_display_name` - Display Name (Generally the first and last name of the user)
 
 <strong>You can also use a filter:</strong> hook into the `wpcf7_hidden_field_value` filter to modify the value of the hidden field  using <a href="http://codex.wordpress.org/Function_Reference/add_filter" rel="nofollow"><code>add_filter()</code></a>. If you know the ID of the input, you can also use the `wpcf7_hidden_field_value_[#ID]` filter.
 
@@ -59,11 +52,24 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 
 == Frequently Asked Questions ==
 
+= How do I turn off formatting the key in the `[all-fields]` output? =
+Add the following to your theme's `functions.php` file:
+
+`
+add_filter('wpcf7_send_all_fields_format_key', '__return_false');
+`
+
 = What is the plugin license? =
 
 * This plugin is released under a GPL license.
 
 == Changelog ==
+
+= 1.3.1 =
+* Fixed: issue in Hidden Fields where the `[hidden-###]` shortcode no longer worked and only `[post_title]` format worked.
+    * Added: Hidden fields now support both formats: `[hidden-123]` and `[post_title]` as long as they're in the form itself.
+* Fixed: issue in Send All Fields where the <a href="http://wordpress.org/support/topic/post_title-hidden-field-no-longer-working#post-3708463">HTML was showing as text</a>.
+* Added `wpcf7_send_all_fields_format_key` filter to Send All Fields plugin to turn on or off formatting of the key (replacing `example-key` with `Example Key` in output). See "How do I turn off formatting the key in the `[all-fields]` output?" in the FAQ.
 
 = 1.3 =
 * Fixed: Hidden field now supports new Contact Form 7 format; post fields will work again.
@@ -76,7 +82,7 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 
 = 1.2.2 =
 * Removed `_wpnonce` field from `[all-fields]` output
-* Fixed a conflict when using "Send All Fields" module alongside "Hidden Fields" module (<a href="http://wordpress.org/support/topic/plugin-contact-form-7-modules-all-fields-doesn«t-work-wit-wordpress-33">as reported here</a>)
+* Fixed a conflict when using "Send All Fields" module alongside "Hidden Fields" module (<a href="http://wordpress.org/support/topic/plugin-contact-form-7-modules-all-fields-doesn´t-work-wit-wordpress-33">as reported here</a>)
 
 = 1.2.1 =
 * Added support for checkboxes with Send All Fields (`[all-fields]`)
@@ -98,6 +104,10 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 
 == Upgrade Notice ==
 
+= 1.3.1 =
+* Fixed: issue in Hidden Fields where the `[hidden-###]` shortcode no longer worked and only `[post_title]` format worked.
+* Fixed: issue in Send All Fields where the <a href="http://wordpress.org/support/topic/post_title-hidden-field-no-longer-working#post-3708463">HTML was showing as text</a>.
+
 = 1.3 =
 * Fixed: Hidden field now supports new Contact Form 7 format; post fields will work again.
 * Fixed: Send All Fields no longer causes spinning form submission in WordPress 3.5
@@ -109,7 +119,7 @@ Using the <strong>Send All Fields</strong> module, you simply need to add `[all-
 
 = 1.2.2 =
 * Removed `_wpnonce` field from `[all-fields]` output
-* Fixed a conflict when using "Send All Fields" module alongside "Hidden Fields" module (<a href="http://wordpress.org/support/topic/plugin-contact-form-7-modules-all-fields-doesn«t-work-wit-wordpress-33">as reported here</a>)
+* Fixed a conflict when using "Send All Fields" module alongside "Hidden Fields" module (<a href="http://wordpress.org/support/topic/plugin-contact-form-7-modules-all-fields-doesn´t-work-wit-wordpress-33">as reported here</a>)
 
 = 1.2.1 =
 * Added support for checkboxes with Send All Fields (`[all-fields]`)
