@@ -5,7 +5,7 @@ Plugin URI: http://www.seodenver.com/contact-form-7-hidden-fields/
 Description: Add hidden fields to the popular Contact Form 7 plugin.
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 1.3.1
+Version: 1.3.2
 */
 
 /*  Copyright 2013 Katz Web Services, Inc. (email: info at katzwebservices.com)
@@ -35,7 +35,8 @@ function contact_form_7_hidden_fields() {
 	} else {
 		if($pagenow != 'plugins.php') { return; }
 		add_action('admin_notices', 'cfhiddenfieldserror');
-		wp_enqueue_script('thickbox');
+		add_action('admin_enqueue_scripts', 'contact_form_7_hidden_fields_scripts');
+
 		function cfhiddenfieldserror() {
 			$out = '<div class="error" id="messages"><p>';
 			if(file_exists(WP_PLUGIN_DIR.'/contact-form-7/wp-contact-form-7.php')) {
@@ -47,6 +48,10 @@ function contact_form_7_hidden_fields() {
 			echo $out;
 		}
 	}
+}
+
+function contact_form_7_hidden_fields_scripts() {
+	wp_enqueue_script('thickbox');
 }
 
 /**
@@ -180,9 +185,8 @@ function wpcf7_hidden_shortcode_handler( $tag ) {
 
 	$value = apply_filters('wpcf7_hidden_field_value', apply_filters('wpcf7_hidden_field_value_'.$id_att, $value));
 
-	$html = '';
-	$html .= '<input type="hidden" name="' . $raw_name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />'."\n";
-	$html .= '<input type="hidden" name="' . $name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />';
+	$html = '<input type="hidden" name="' . $raw_name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />'."\n";
+	if($name !== $raw_name) { $html .= '<input type="hidden" name="' . $name . '" value="' . esc_attr( $value ) . '"' . $atts . ' />'; }
 
 	return $html;
 }

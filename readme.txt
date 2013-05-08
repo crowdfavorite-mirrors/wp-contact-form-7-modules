@@ -65,6 +65,10 @@ add_filter('wpcf7_send_all_fields_format_key', '__return_false');
 
 == Changelog ==
 
+= 1.3.2 =
+* Hidden Fields: Fixed PHP notice caused by improper adding of script in administration
+* Hidden Fields: Fixed double inputs that were the exact same (<a href="http://wordpress.org/support/topic/render-the-fields-twice">as reported here</a>)
+
 = 1.3.1 =
 * Fixed: issue in Hidden Fields where the `[hidden-###]` shortcode no longer worked and only `[post_title]` format worked.
     * Added: Hidden fields now support both formats: `[hidden-123]` and `[post_title]` as long as they're in the form itself.
